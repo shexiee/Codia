@@ -54,9 +54,10 @@ And serve the `.next` output (or run `next start` on a Node host).
 app/
   layout.tsx, page.tsx, globals.css     # Next.js App Router
 components/
-  ui/                                   # Button, Tabs, Card primitives
+  ui/                                   # Button, Tabs primitives
   header.tsx, hero.tsx                  # Page chrome
   code-input.tsx                        # Monaco editor + upload
+  language-picker.tsx                   # Language dropdown
   diagram-viewer.tsx                    # Mermaid rendering + SVG/PNG export
   class-explorer.tsx                    # Class details panel
 lib/
@@ -68,8 +69,6 @@ lib/
     typescript.ts                       # TypeScript class parser
   mermaid-builder.ts                    # Builds Mermaid source from parsed data
   utils.ts                              # cn() helper
-examples/
-  animals.py                            # Sample input
 ```
 
 ## How it works

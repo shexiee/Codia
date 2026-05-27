@@ -16,11 +16,6 @@ export interface ParseResult {
   relationships: Relationship[];
 }
 
-export interface ParseError {
-  error: string;
-  line?: number;
-}
-
 export type Language = "python" | "java" | "typescript";
 
 export interface LanguageConfig {
