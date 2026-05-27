@@ -1,114 +1,214 @@
-# Codia — Code to Diagram
+<div align="center">
 
-Turn **Python**, **Java**, or **TypeScript** code into beautiful UML class diagrams. Paste, parse, and visualize in seconds.
+<br />
 
-**100% client-side.** No backend, no API keys, no language runtime required. Deploy anywhere that serves static files.
+<img src="https://img.shields.io/badge/Codia-7c3aed?style=for-the-badge&logoColor=white&labelColor=0a0a0f" alt="Codia" height="32" />
 
-## Stack
+<h1>Code → diagram in one paste.</h1>
 
-- **Next.js 15** (App Router) + **React 19**
-- **TypeScript** + **Tailwind CSS** with a shadcn-style component layer
-- **Monaco Editor** for the code-paste experience
-- **Mermaid.js** for rendering class diagrams
-- **Framer Motion** for smooth UI transitions
-- **In-browser parsers** for Python, Java, and TypeScript — handle classes, methods, attributes, inheritance, type annotations, and multi-line definitions ([lib/parsers/](lib/parsers/))
+<p>
+  Beautiful UML class diagrams from <b>Python</b>, <b>Java</b>, and <b>TypeScript</b>.<br />
+  100% client-side. No backend. Deploy anywhere.
+</p>
 
-## Run locally
+<br />
+
+<p>
+  <img src="https://img.shields.io/badge/Next.js_15-0a0a0f?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React_19-149ECA?style=flat-square&logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Mermaid-FF3670?style=flat-square&logo=mermaid&logoColor=white" alt="Mermaid" />
+  <img src="https://img.shields.io/badge/Deploy_on-Vercel-0a0a0f?style=flat-square&logo=vercel&logoColor=white" alt="Vercel" />
+</p>
+
+<br />
+
+</div>
+
+---
+
+## Quick start
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). That's it — everything runs in the browser, including the parser.
+Open <a href="http://localhost:3000">localhost:3000</a> — pick a language, paste your code, click **Generate diagram**.
+
+<br />
+
+## Supported languages
+
+<table>
+  <thead>
+    <tr>
+      <th align="left">Language</th>
+      <th align="left">Extension</th>
+      <th align="left">Captures</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>Python</b></td>
+      <td><code>.py</code></td>
+      <td><code>class</code>, methods, <code>self.x</code> attrs, inheritance, type hints</td>
+    </tr>
+    <tr>
+      <td><b>Java</b></td>
+      <td><code>.java</code></td>
+      <td><code>class</code> / <code>interface</code> / <code>enum</code> / <code>record</code>, <code>extends</code>, <code>implements</code>, fields, methods, generics</td>
+    </tr>
+    <tr>
+      <td><b>TypeScript</b></td>
+      <td><code>.ts</code> <code>.tsx</code></td>
+      <td><code>class</code>, <code>extends</code>, <code>implements</code>, getters/setters, ctor param properties</td>
+    </tr>
+  </tbody>
+</table>
+
+> [!NOTE]
+> All parsers are hand-rolled in TypeScript — no AST libraries, no WASM, no bundle bloat. Each parser is ~150 lines and handles ~90% of typical OO code.
+
+<br />
+
+## How it works
+
+```
+    ┌──────────────┐     ┌────────────────┐     ┌──────────────────┐     ┌──────────────┐
+    │   Monaco     │ ──▶ │  Language      │ ──▶ │  Mermaid         │ ──▶ │  SVG / PNG   │
+    │   editor     │     │  parser (TS)   │     │  classDiagram    │     │  download    │
+    └──────────────┘     └────────────────┘     └──────────────────┘     └──────────────┘
+```
+
+1. Pick a language from the dropdown in the editor toolbar
+2. Paste or upload your code
+3. The matching parser in [lib/parsers/](lib/parsers/) walks the source to extract classes, methods, fields, and inheritance
+4. [lib/mermaid-builder.ts](lib/mermaid-builder.ts) emits Mermaid `classDiagram` syntax
+5. Mermaid renders SVG in the browser — export as SVG or PNG
+
+<br />
 
 ## Deploy
 
-### Vercel (easiest — one-click)
+<table>
+<tr>
+<td width="50%" valign="top">
 
-1. Push the repo to GitHub.
-2. Go to [vercel.com/new](https://vercel.com/new) and import the repo.
-3. Click **Deploy**. No env vars, no settings, no configuration.
-
-You can also deploy from the command line:
+#### Vercel (recommended)
 
 ```bash
-npm i -g vercel
-vercel        # preview deploy
-vercel --prod # production deploy
+vercel --prod
 ```
 
-### Any other static host
+Or push to GitHub and import at [vercel.com/new](https://vercel.com/new).
 
-Because there's no backend, you can also deploy to **Netlify**, **Cloudflare Pages**, **GitHub Pages**, or any static host. Build with:
+</td>
+<td width="50%" valign="top">
+
+#### Any static host
 
 ```bash
 npm run build
 ```
 
-And serve the `.next` output (or run `next start` on a Node host).
+Drop on Netlify, Cloudflare Pages, GitHub Pages, or run `next start` on a Node host.
+
+</td>
+</tr>
+</table>
+
+No env vars. No backend. No configuration.
+
+<br />
 
 ## Project layout
 
+```text
+codia/
+├─ app/                         Next.js App Router (layout · page · globals.css)
+├─ components/
+│  ├─ ui/                       Button · Tabs primitives
+│  ├─ header.tsx · hero.tsx     Page chrome
+│  ├─ code-input.tsx            Monaco editor + upload zone
+│  ├─ language-picker.tsx       Inline language dropdown
+│  ├─ diagram-viewer.tsx        Mermaid render + SVG / PNG export
+│  └─ class-explorer.tsx        Side panel with class details
+├─ lib/
+│  ├─ types.ts                  Shared types + Language union
+│  ├─ parsers/
+│  │  ├─ index.ts               LANGUAGES config + parse() dispatcher
+│  │  ├─ python.ts              Python class parser
+│  │  ├─ java.ts                Java class parser
+│  │  └─ typescript.ts          TypeScript class parser
+│  ├─ mermaid-builder.ts        Builds Mermaid source from parsed data
+│  └─ utils.ts                  cn() helper
+└─ tailwind.config.ts           Design tokens (violet / indigo)
 ```
-app/
-  layout.tsx, page.tsx, globals.css     # Next.js App Router
-components/
-  ui/                                   # Button, Tabs primitives
-  header.tsx, hero.tsx                  # Page chrome
-  code-input.tsx                        # Monaco editor + upload
-  language-picker.tsx                   # Language dropdown
-  diagram-viewer.tsx                    # Mermaid rendering + SVG/PNG export
-  class-explorer.tsx                    # Class details panel
-lib/
-  types.ts                              # Shared types + Language type
-  parsers/
-    index.ts                            # LANGUAGES config + parse() dispatcher
-    python.ts                           # Python class parser
-    java.ts                             # Java class parser
-    typescript.ts                       # TypeScript class parser
-  mermaid-builder.ts                    # Builds Mermaid source from parsed data
-  utils.ts                              # cn() helper
-```
 
-## How it works
+<br />
 
-1. You pick a language and paste (or upload) code into the Monaco editor.
-2. On **Generate diagram**, the language-specific parser in [lib/parsers/](lib/parsers/) walks the code to extract classes, methods, attributes, and inheritance.
-3. [lib/mermaid-builder.ts](lib/mermaid-builder.ts) converts the parsed structure into Mermaid `classDiagram` syntax.
-4. Mermaid.js renders it as SVG in the browser.
-5. Download as **SVG** or **PNG**.
+## Parser details
 
-## Parser scope
+<details>
+<summary><b>Python</b> — <code>lib/parsers/python.ts</code></summary>
 
-All three parsers are hand-rolled (no AST-library dependencies) and target the common cases for class-diagram extraction.
+<br />
 
-### Python ([lib/parsers/python.ts](lib/parsers/python.ts))
 - `class Foo:` / `class Bar(Foo):` / `class Baz(Foo, Mixin):`
 - Methods (`def`, `async def`) with parameter names — type hints and defaults stripped
 - `self.attr = ...` assignments in `__init__`
 - Class-level attributes (`x = 1`, `x: int = 1`)
 - Dotted base classes (e.g. `class X(abc.ABC)` → parent `ABC`)
+- Multi-line class / method signatures (joined via paren-depth tracking)
 
-### Java ([lib/parsers/java.ts](lib/parsers/java.ts))
+</details>
+
+<details>
+<summary><b>Java</b> — <code>lib/parsers/java.ts</code></summary>
+
+<br />
+
 - `class`, `interface`, `enum`, `record` declarations
-- `extends` and `implements` (both contribute to inheritance edges)
-- Methods and constructors with parameter names (modifiers and annotations stripped)
-- Fields (including comma-separated declarations like `int x, y, z;`)
+- `extends` and `implements` both contribute to inheritance edges
+- Methods and constructors with parameter names — modifiers and annotations stripped
+- Fields including comma-separated declarations like `int x, y, z;`
 - Generics (`List<String>`) handled in types
 
-### TypeScript ([lib/parsers/typescript.ts](lib/parsers/typescript.ts))
+</details>
+
+<details>
+<summary><b>TypeScript</b> — <code>lib/parsers/typescript.ts</code></summary>
+
+<br />
+
 - `class`, `abstract class`, `export class` declarations
 - `extends` and `implements`
 - Methods, async methods, getters/setters
-- Class fields with type annotations, optional / definite modifiers (`?`, `!`)
-- Constructor parameter properties (`constructor(public name: string)`) — automatically become fields
+- Class fields with type annotations and optional / definite modifiers (`?`, `!`)
+- Constructor parameter properties (`constructor(public name: string)`) → fields
 
-Each parser handles ~90% of typical OO code. Exotic dynamic constructs (Python `type(...)`, Java reflection, TypeScript decorators that rewrite classes) are not modeled.
+</details>
 
-### Adding a language
+> [!IMPORTANT]
+> Exotic dynamic constructs (Python `type(...)`, Java reflection, TypeScript decorators that rewrite classes) are not modeled. For typical OO code, results match a real AST parse.
 
-1. Create `lib/parsers/<lang>.ts` exporting a `parse<Lang>(code: string): ParseResult` function.
-2. Add an entry to `LANGUAGES` in [lib/parsers/index.ts](lib/parsers/index.ts) with the Monaco language ID, default filename, and sample code.
-3. Add the language to the `Language` union in [lib/types.ts](lib/types.ts) and the dispatcher in `parse()`.
-4. The language picker UI updates automatically.
+<br />
+
+## Add a language
+
+1. Create `lib/parsers/<lang>.ts` exporting `parse<Lang>(code: string): ParseResult`
+2. Add an entry to `LANGUAGES` in [lib/parsers/index.ts](lib/parsers/index.ts) with the Monaco language ID, default filename, and sample code
+3. Add the language to the `Language` union in [lib/types.ts](lib/types.ts) and the dispatch in `parse()`
+4. The language picker UI updates automatically
+
+<br />
+
+---
+
+<div align="center">
+  <sub>
+    Built with <b>Next.js 15</b> · <b>TypeScript</b> · <b>Tailwind CSS</b> · <b>Mermaid.js</b> · <b>Monaco Editor</b> · <b>Framer Motion</b>
+  </sub>
+</div>
